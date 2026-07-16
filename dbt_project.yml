@@ -46,7 +46,7 @@ models:
       +incremental_strategy: merge
       +unique_key: __source_file
     silver:
-      +materialized: view
+      +materialized: table
       +schema: Silver_23613
 
 

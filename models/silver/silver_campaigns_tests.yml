@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: silver_campaigns
+    description: Cleaned campaign data
+
+    columns:
+
+      # Primary Key
+      - name: campaign_id
+        tests:
+          - unique
+          - not_null
+
+      # Core Business Fields
+      - name: campaign_name
+        tests:
+          - not_null
+
+      - name: campaign_type
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Discount Event
+                - Clearance
+                - Product Launch
+                - Seasonal Promotion
+                - Brand Awareness
+
+      - name: channel
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Email
+                - Print Media
+                - Digital Ads
+                - Social Media
+                - In-Store
+                - Multiple (Email, Social Media, In-Store)
+
+      # Financials
+      - name: budget
+        tests:
+          - not_null
+
+      - name: total_cost
+        tests:
+          - not_null
+
+      - name: total_revenue
+        tests:
+          - not_null
+
+      - name: roi
+        tests:
+          - not_null
+
+      # Dates
+      - name: start_date
+        tests:
+          - not_null
+
+      - name: end_date
+        tests:
+          - not_null
+
+      - name: last_modified_date
+        tests:
+          - not_null
+
+      # Audience
+      - name: target_audience
+        tests:
+          - not_null

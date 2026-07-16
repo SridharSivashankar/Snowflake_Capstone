@@ -1,0 +1,122 @@
+version: 2
+
+models:
+  - name: silver_employees
+    description: Cleaned and standardized employee data
+
+    columns:
+
+      - name: employee_id
+        tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        tests:
+          - not_null
+
+      - name: last_name
+        tests:
+          - not_null
+
+      - name: full_name
+        tests:
+          - not_null
+
+      - name: email_id
+        tests:
+          - not_null
+
+      - name: email_status
+        tests:
+          - accepted_values:
+              values:
+                - VALID
+                - INVALID
+
+      - name: phone_status
+        tests:
+          - accepted_values:
+              values:
+                - VALID
+                - INVALID
+
+      - name: date_of_birth
+        tests:
+          - not_null
+
+      - name: hire_date
+        tests:
+          - not_null
+
+      - name: last_modified_date
+        tests:
+          - not_null
+
+      - name: employment_status
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - ACTIVE
+                - INACTIVE
+
+      - name: department
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Sales
+                - Inventory
+                - Operations
+                - Customer Service
+
+      - name: standardized_role
+        tests:
+          - not_null
+
+      - name: manager_id
+        tests:
+          - not_null
+
+      - name: work_location
+        tests:
+          - not_null
+
+      - name: salary
+        tests:
+          - not_null
+
+      - name: current_sales
+        tests:
+          - not_null
+
+      - name: sales_target
+        tests:
+          - not_null
+
+      - name: performance_rating
+        tests:
+          - not_null
+
+      - name: tenure_years
+        tests:
+          - not_null
+
+      - name: target_achievement_percentage
+
+      - name: city
+        tests:
+          - not_null
+
+      - name: state
+        tests:
+          - not_null
+
+      - name: zip_code
+        tests:
+          - not_null
+
+      - name: standardized_address
+        tests:
+          - not_null
