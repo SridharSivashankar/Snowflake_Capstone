@@ -1,0 +1,163 @@
+version: 2
+
+models:
+  - name: silver_products
+    description: Cleaned and standardized product master data
+
+    columns:
+
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        tests:
+          - not_null
+
+      - name: brand
+        tests:
+          - not_null
+
+      - name: category
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Electronics
+
+      - name: subcategory
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Audio Devices
+                - Mobile Devices
+                - Wearable Tech
+                - Computing
+                - Imaging
+
+      - name: product_line
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Premium
+                - Budget
+                - Business
+                - Gaming
+                - Ultra
+
+      - name: color
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Black
+                - Blue
+                - Green
+                - Red
+                - Silver
+                - White
+
+      - name: size
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - One Size
+
+      - name: warranty_period
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - No Warranty
+                - 1 Year
+                - 2 Years
+                - 3 Years
+
+      - name: short_description
+        tests:
+          - not_null
+
+      - name: technical_specs
+        tests:
+          - not_null
+
+      - name: product_full_description
+        tests:
+          - not_null
+
+      - name: product_hierarchy
+        tests:
+          - not_null
+
+      - name: cost_price
+        tests:
+          - not_null
+
+      - name: unit_price
+        tests:
+          - not_null
+
+      - name: profit_amount
+        tests:
+          - not_null
+
+      - name: profit_margin_percentage
+        tests:
+          - not_null
+
+      - name: stock_quantity
+        tests:
+          - not_null
+
+      - name: reorder_level
+        tests:
+          - not_null
+
+      - name: is_low_stock
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - TRUE
+                - FALSE
+
+      - name: stock_status
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - IN STOCK
+                - LOW STOCK
+                - OUT OF STOCK
+
+      - name: is_featured
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - TRUE
+                - FALSE
+
+      - name: supplier_id
+        tests:
+          - not_null
+
+      - name: weight
+        tests:
+          - not_null
+
+      - name: dimensions
+        tests:
+          - not_null
+
+      - name: launch_date
+        tests:
+          - not_null
+
+      - name: last_modified_date
+        tests:
+          - not_null

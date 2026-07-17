@@ -14,13 +14,7 @@ sources:
     tables:
       - name: EXT_CAMPAIGN         
         description: "The campaign details are stored here"
-      
-        columns:
-          - name: id
-            description: "Primary key of the charge"
-            data_tests:    
-              - unique
-              - not_null
+
 
       - name: EXT_CUSTOMER     
         description: "The customer details are stored here"

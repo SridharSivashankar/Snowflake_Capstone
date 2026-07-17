@@ -1,0 +1,168 @@
+version: 2
+
+models:
+  - name: silver_orders
+
+    columns:
+
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: employee_id
+        tests:
+          - not_null
+
+      - name: campaign_id
+        tests:
+          - not_null
+
+      - name: store_id
+        tests:
+          - not_null
+
+      - name: order_source
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Website
+                - In-Store
+                - Mobile App
+
+      - name: order_status
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Pending
+                - Processing
+                - Shipped
+                - Delivered
+                - Cancelled
+                - Returned
+                - Completed
+
+      - name: payment_method
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Credit Card
+                - Bank Transfer
+                - Debit Card
+                - Cash
+                - Paypal
+
+      - name: shipping_method
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Standard
+                - Express
+                - Overnight
+
+      - name: created_at
+        tests:
+          - not_null
+
+      - name: order_date
+        tests:
+          - not_null
+
+      - name: shipping_date
+        tests:
+          - not_null
+
+      - name: estimated_delivery_date
+        tests:
+          - not_null
+
+      - name: delivery_date
+        tests:
+          - not_null
+
+      - name: total_items
+        tests:
+          - not_null
+
+      - name: total_quantity
+        tests:
+          - not_null
+
+      - name: gross_sales_amount
+        tests:
+          - not_null
+
+      - name: total_cost
+        tests:
+          - not_null
+
+      - name: total_discount
+        tests:
+          - not_null
+
+      - name: line_revenue
+        tests:
+          - not_null
+
+      - name: line_cost
+        tests:
+          - not_null
+
+      - name: profit_amount
+        tests:
+          - not_null
+
+      - name: profit_margin_percentage
+        tests:
+          - not_null
+
+      - name: order_time_of_day
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Morning
+                - Afternoon
+                - Evening
+                - Night
+
+      - name: order_year
+        tests:
+          - not_null
+
+      - name: order_quarter
+        tests:
+          - not_null
+
+      - name: order_month
+        tests:
+          - not_null
+
+      - name: order_week
+        tests:
+          - not_null
+
+      - name: processing_days
+        tests:
+          - not_null
+
+      - name: shipping_days
+        tests:
+          - not_null
+
+      - name: delivery_status
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Early
+                - On Time
+                - Delayed

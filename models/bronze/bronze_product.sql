@@ -1,13 +1,18 @@
-select
+SELECT
     VALUE,
-    COL1 as _source_file,
-    current_timestamp as _loaded_at,
-    from {{ source('rawdata_bronze', 'EXT_PRODUCT') }}
+    Col1 as _source_file,
+    METADATA$FILENAME AS source_file_name,
+    CURRENT_TIMESTAMP() AS _loaded_at
+FROM {{ source('rawdata_bronze','EXT_CUSTOMER') }}
 
 {% if is_incremental() %}
-where source_file not in (
-    select distinct _source_file
+
+where md5(to_varchar(col1)) not in (
+
+    select
+        md5(to_varchar(_source_file))
     from {{ this }}
+
 )
- 
+
 {% endif %}

@@ -38,15 +38,13 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   Capstone_Project:
     # Applies to all files under models/example/
-    example:
-      +materialized: table
     bronze:
       +materialized: incremental
-      +schema: Bronze_23613
+      +schema: Bronze
       +incremental_strategy: merge
-      +unique_key: __source_file
+      +unique_key: _source_file
     silver:
       +materialized: table
-      +schema: Silver_23613
+      +schema: Silver
 
 
