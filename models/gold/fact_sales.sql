@@ -1,6 +1,9 @@
-{{ config(
-    materialized = 'table'
-) }}
+
+--   Since the source data contains one product per row in silver_orders, order-level amounts such as discount
+--   and shipping cost are stored directly on each fact row.
+
+--   No allocation is required because there is no multi-product order represented within a single row.
+
 
 WITH sales AS (
 
@@ -91,8 +94,10 @@ SELECT
         2
     ) AS cost_amount,
 
+-- Discount is assumed as percentage of total sales amount
+
     COALESCE(
-        s.total_discount,
+        round(s.total_discount*total_sales_amount/100,2),
         0
     ) AS discount_amount,
 

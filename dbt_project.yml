@@ -49,5 +49,8 @@ models:
     gold:
       +materialized: table
       +schema: Gold
+    reporting_views:
+      +materialized: view
+      +schema: Reporting_views
 
 

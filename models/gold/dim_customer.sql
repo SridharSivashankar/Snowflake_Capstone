@@ -1,6 +1,7 @@
-{{ config(
-    materialized = 'table'
-) }}
+-- Tests are present only for dim_customers, dim_date and fact_sales since these are the tables that
+-- are newly created or have additional refernces. The other tables have no tests since they directly
+-- reference the already tested silver models
+
 
 SELECT
 

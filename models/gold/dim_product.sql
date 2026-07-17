@@ -1,7 +1,3 @@
-{{ config(
-    materialized='table'
-) }}
-
 SELECT
 
     ROW_NUMBER() OVER (ORDER BY p.product_id) AS product_key,

@@ -1,0 +1,94 @@
+
+version: 2
+
+models:
+  - name: dim_customer
+    description: Type 2 Slowly Changing Customer Dimension built from customer_snapshot
+
+    columns:
+
+      - name: customer_key
+        description: Surrogate key generated from Customer ID and snapshot validity start date
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: Business key
+        tests:
+          - not_null
+
+      - name: full_name
+        tests:
+          - not_null
+
+      - name: email
+        tests:
+          - not_null
+
+
+
+      - name: street
+        tests:
+          - not_null
+
+      - name: city
+        tests:
+          - not_null
+
+      - name: state
+        tests:
+          - not_null
+
+      - name: zip_code
+        tests:
+          - not_null
+
+      - name: standardized_address
+        tests:
+          - not_null
+
+      - name: income_bracket
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - LOW
+                - MEDIUM
+                - HIGH
+
+      - name: occupation
+        tests:
+          - not_null
+
+      - name: loyalty_tier
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - BRONZE
+                - SILVER
+                - GOLD
+                - PLATINUM
+
+      - name: segment
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Young
+                - Middle-aged
+                - Senior
+                - Invalid
+
+      - name: registration_date
+        tests:
+          - not_null
+
+      - name: valid_from
+        tests:
+          - not_null
+
+      - name: is_current
+        tests:
+          - not_null
