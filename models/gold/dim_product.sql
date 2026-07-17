@@ -1,6 +1,10 @@
 SELECT
 
-    ROW_NUMBER() OVER (ORDER BY p.product_id) AS product_key,
+    
+    {{ dbt_utils.generate_surrogate_key([
+        'p.product_id'
+    ]) }} AS product_key,
+
 
     p.product_id,
     p.product_name,

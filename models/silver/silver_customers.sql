@@ -94,80 +94,139 @@ cleaned AS (
             ELSE 'INVALID'
         END AS email_status,
 
-        ----------------------------------------------------
+      ----------------------------------------------------
         -- Phone Validation
         ----------------------------------------------------
-        phone AS original_phone,
 
-        CASE
+            phone AS original_phone,
 
-            -- 555.465.553X
-            WHEN REGEXP_LIKE(
-                UPPER(TRIM(phone)),
-                '^555[\.\-\s]?[0-9]{3}[\.\-\s]?[0-9]{3}X$'
-            )
-            THEN UPPER(
+            UPPER(
                 REGEXP_REPLACE(
                     TRIM(phone),
                     '[^0-9X]',
                     ''
                 )
-            )
+            ) AS cleaned_phone,
 
-            -- 5551234567
-            WHEN REGEXP_LIKE(
-                REGEXP_REPLACE(phone,'[^0-9]',''),
-                '^555[0-9]{7}$'
-            )
-            THEN REGEXP_REPLACE(
-                phone,
-                '[^0-9]',
-                ''
-            )
+            CASE
 
-            -- +1 555 872 122X
-            WHEN REGEXP_LIKE(
-                UPPER(TRIM(phone)),
-                '^\+1[\s\-]555[\s\-][0-9]{3}[\s\-][0-9]{3}X$'
-            )
-            THEN RIGHT(
-                UPPER(
+                ------------------------------------------------
+                -- Formats ending with X
+                -- Examples:
+                -- 555.857.336X
+                -- 555-857-336X
+                -- 555 857 336X
+                -- (555) 857-336X
+                -- 555857336X
+                ------------------------------------------------
+                WHEN REGEXP_LIKE(
+                    UPPER(
+                        REGEXP_REPLACE(
+                            TRIM(phone),
+                            '[^0-9X]',
+                            ''
+                        )
+                    ),
+                    '^555[0-9]{6}X$'
+                )
+                THEN UPPER(
                     REGEXP_REPLACE(
                         TRIM(phone),
                         '[^0-9X]',
                         ''
                     )
-                ),
-                10
-            )
+                )
 
-            ELSE NULL
+                ------------------------------------------------
+                -- +1 prefixed formats ending with X
+                -- Examples:
+                -- +1 555 857 336X
+                -- +1-555-857-336X
+                -- +1555857336X
+                ------------------------------------------------
+                WHEN REGEXP_LIKE(
+                    UPPER(
+                        REGEXP_REPLACE(
+                            TRIM(phone),
+                            '[^0-9X]',
+                            ''
+                        )
+                    ),
+                    '^1555[0-9]{6}X$'
+                )
+                THEN RIGHT(
+                    UPPER(
+                        REGEXP_REPLACE(
+                            TRIM(phone),
+                            '[^0-9X]',
+                            ''
+                        )
+                    ),
+                    10
+                )
 
-        END AS phn_no,
+                ------------------------------------------------
+                -- Fully numeric format
+                -- Example:
+                -- 5551234567
+                ------------------------------------------------
+                WHEN REGEXP_LIKE(
+                    REGEXP_REPLACE(
+                        TRIM(phone),
+                        '[^0-9]',
+                        ''
+                    ),
+                    '^555[0-9]{7}$'
+                )
+                THEN REGEXP_REPLACE(
+                    TRIM(phone),
+                    '[^0-9]',
+                    ''
+                )
 
-        CASE
+                ELSE NULL
 
-            WHEN REGEXP_LIKE(
-                UPPER(TRIM(phone)),
-                '^555[\.\-\s]?[0-9]{3}[\.\-\s]?[0-9]{3}X$'
-            )
-            THEN 'VALID'
+            END AS phn_no,
 
-            WHEN REGEXP_LIKE(
-                REGEXP_REPLACE(phone,'[^0-9]',''),
-                '^555[0-9]{7}$'
-            )
-            THEN 'VALID'
+            CASE
 
-            WHEN REGEXP_LIKE(
-                UPPER(TRIM(phone)),
-                '^\+1[\s\-]555[\s\-][0-9]{3}[\s\-][0-9]{3}X$'
-            )
-            THEN 'VALID'
+                WHEN REGEXP_LIKE(
+                    UPPER(
+                        REGEXP_REPLACE(
+                            TRIM(phone),
+                            '[^0-9X]',
+                            ''
+                        )
+                    ),
+                    '^555[0-9]{6}X$'
+                )
+                THEN 'VALID'
 
-            ELSE 'INVALID'
+                WHEN REGEXP_LIKE(
+                    UPPER(
+                        REGEXP_REPLACE(
+                            TRIM(phone),
+                            '[^0-9X]',
+                            ''
+                        )
+                    ),
+                    '^1555[0-9]{6}X$'
+                )
+                THEN 'VALID'
 
-        END AS phone_status,
+                WHEN REGEXP_LIKE(
+                    REGEXP_REPLACE(
+                        TRIM(phone),
+                        '[^0-9]',
+                        ''
+                    ),
+                    '^555[0-9]{7}$'
+                )
+                THEN 'VALID'
+
+                ELSE 'INVALID'
+
+            END AS phone_status,
         ----------------------------------------------------
         -- Date Standardization
         ----------------------------------------------------
