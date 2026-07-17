@@ -3,7 +3,7 @@ SELECT
     Col1 as _source_file,
     METADATA$FILENAME AS source_file_name,
     CURRENT_TIMESTAMP() AS _loaded_at
-FROM {{ source('rawdata_bronze','EXT_CUSTOMER') }}
+FROM {{ source('rawdata_bronze','EXT_PRODUCT') }}
 
 {% if is_incremental() %}
 

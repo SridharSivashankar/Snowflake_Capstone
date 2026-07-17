@@ -79,7 +79,7 @@ orders_flattened AS (
         TRIM(f.value:shipping_address:zip_code::STRING)
             AS shipping_zip_code,
 
-        item.value:product_id::STRING              AS product_id,
+        item.value:product_id::STRING AS product_id,
 
         COALESCE(
             item.value:quantity::NUMBER,
@@ -144,11 +144,12 @@ aggregated_orders AS (
         ------------------------------------------------
 
         order_id,
+        product_id,
         customer_id,
         employee_id,
         campaign_id,
         store_id,
-
+        
         ------------------------------------------------
         -- Order Attributes
         ------------------------------------------------
@@ -236,6 +237,7 @@ aggregated_orders AS (
     GROUP BY
 
         order_id,
+        product_id,
         customer_id,
         employee_id,
         campaign_id,
@@ -387,10 +389,10 @@ deduplicated AS (
 
     FROM final_transformed
 
-    QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY order_id
-        ORDER BY created_at DESC
-    ) = 1
+        QUALIFY ROW_NUMBER() OVER (
+            PARTITION BY order_id, product_id
+            ORDER BY created_at DESC
+        ) = 1
 
 )
 

@@ -97,25 +97,77 @@ cleaned AS (
         ----------------------------------------------------
         -- Phone Validation
         ----------------------------------------------------
+        phone AS original_phone,
 
         CASE
+
+            -- 555.465.553X
+            WHEN REGEXP_LIKE(
+                UPPER(TRIM(phone)),
+                '^555[\.\-\s]?[0-9]{3}[\.\-\s]?[0-9]{3}X$'
+            )
+            THEN UPPER(
+                REGEXP_REPLACE(
+                    TRIM(phone),
+                    '[^0-9X]',
+                    ''
+                )
+            )
+
+            -- 5551234567
             WHEN REGEXP_LIKE(
                 REGEXP_REPLACE(phone,'[^0-9]',''),
-                '^[0-9]{10}$'
+                '^555[0-9]{7}$'
             )
-            THEN REGEXP_REPLACE(phone,'[^0-9]','')
+            THEN REGEXP_REPLACE(
+                phone,
+                '[^0-9]',
+                ''
+            )
+
+            -- +1 555 872 122X
+            WHEN REGEXP_LIKE(
+                UPPER(TRIM(phone)),
+                '^\+1[\s\-]555[\s\-][0-9]{3}[\s\-][0-9]{3}X$'
+            )
+            THEN RIGHT(
+                UPPER(
+                    REGEXP_REPLACE(
+                        TRIM(phone),
+                        '[^0-9X]',
+                        ''
+                    )
+                ),
+                10
+            )
+
             ELSE NULL
+
         END AS phn_no,
 
         CASE
+
             WHEN REGEXP_LIKE(
-                REGEXP_REPLACE(phone,'[^0-9]',''),
-                '^[0-9]{10}$'
+                UPPER(TRIM(phone)),
+                '^555[\.\-\s]?[0-9]{3}[\.\-\s]?[0-9]{3}X$'
             )
             THEN 'VALID'
-            ELSE 'INVALID'
-        END AS phone_status,
 
+            WHEN REGEXP_LIKE(
+                REGEXP_REPLACE(phone,'[^0-9]',''),
+                '^555[0-9]{7}$'
+            )
+            THEN 'VALID'
+
+            WHEN REGEXP_LIKE(
+                UPPER(TRIM(phone)),
+                '^\+1[\s\-]555[\s\-][0-9]{3}[\s\-][0-9]{3}X$'
+            )
+            THEN 'VALID'
+
+            ELSE 'INVALID'
+
+        END AS phone_status,
         ----------------------------------------------------
         -- Date Standardization
         ----------------------------------------------------

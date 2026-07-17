@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: fact_sales
+
+    columns:
+
+      - name: sales_key
+        tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        tests:
+          - not_null
+
+      - name: customer_key
+        tests:
+          - not_null
+
+      - name: product_key
+        tests:
+          - not_null
+
+      - name: store_key
+        tests:
+          - not_null
+
+      - name: date_key
+        tests:
+          - not_null
+
+      - name: employee_key
+        tests:
+          - not_null
+
+      - name: quantity_sold
+        tests:
+          - not_null
+
+      - name: total_sales_amount
+        tests:
+          - not_null
