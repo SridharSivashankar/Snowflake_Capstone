@@ -40,17 +40,17 @@ models:
     # Applies to all files under models/example/
     bronze:
       +materialized: incremental
-      +schema: Bronze
+      +schema: Bronze_23613
       +incremental_strategy: merge
       +unique_key: _source_file
     silver:
       +materialized: table
-      +schema: Silver
+      +schema: Silver_23613
     gold:
       +materialized: table
-      +schema: Gold
+      +schema: Gold_23613
     reporting_views:
       +materialized: view
-      +schema: Reporting_views
+      +schema: Reporting_views_23613
 
 
