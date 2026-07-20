@@ -1,7 +1,7 @@
 
 SELECT
 
-    ------------------------------------------------------------
+
     -- Customer Segmentation Attributes
 
     dc.segment AS customer_segment,
@@ -10,14 +10,12 @@ SELECT
 
     dc.income_bracket,
 
-    ------------------------------------------------------------
     -- Customer Metrics
 
     COUNT(DISTINCT dc.customer_id) AS total_customers,
 
     COUNT(DISTINCT fs.order_id) AS total_orders,
 
-    ------------------------------------------------------------
     -- Sales Metrics
 
     SUM(fs.quantity_sold) AS total_quantity_purchased,
@@ -37,7 +35,6 @@ SELECT
         2
     ) AS average_order_value,
 
-    ------------------------------------------------------------
     -- Customer Value Metrics
 
     ROUND(
@@ -54,7 +51,6 @@ SELECT
 
 FROM {{ ref('fact_sales') }} fs
 
-    ------------------------------------------------------------
     -- Customer Dimension
 
     INNER JOIN {{ ref('dim_customer') }} dc
@@ -66,7 +62,6 @@ GROUP BY
     dc.loyalty_tier,
     dc.income_bracket
 
-------------------------------------------------------------
 -- Highest revenue generating segments first
 
 ORDER BY

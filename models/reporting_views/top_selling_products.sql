@@ -1,7 +1,6 @@
 
 SELECT
 
-    ------------------------------------------------------------
     -- Product Information
 
     dp.product_name,
@@ -10,7 +9,6 @@ SELECT
 
     dp.brand,
 
-    ------------------------------------------------------------
     -- Sales Metrics
 
     SUM(fs.quantity_sold) AS total_quantity_sold,
@@ -29,7 +27,6 @@ SELECT
 
 FROM {{ ref('fact_sales') }} fs
 
-    ------------------------------------------------------------
     -- Product Dimension
 
     INNER JOIN {{ ref('dim_product') }} dp
@@ -41,7 +38,6 @@ GROUP BY
     dp.category,
     dp.brand
 
-------------------------------------------------------------
 -- Highest selling products first
 
 ORDER BY

@@ -1,5 +1,7 @@
 WITH source AS (
 
+    -- Source Data
+
     SELECT *
     FROM {{ ref('bronze_orders') }}
 
@@ -9,16 +11,22 @@ orders_flattened AS (
 
     SELECT
 
+        -- Order Keys
+
         f.value:order_id::STRING                    AS order_id,
         f.value:customer_id::STRING                 AS customer_id,
         f.value:employee_id::STRING                 AS employee_id,
         f.value:campaign_id::STRING                 AS campaign_id,
         f.value:store_id::STRING                    AS store_id,
 
+        -- Order Attributes
+
         INITCAP(TRIM(f.value:order_source::STRING)) AS order_source,
         INITCAP(TRIM(f.value:order_status::STRING)) AS order_status,
         INITCAP(TRIM(f.value:payment_method::STRING)) AS payment_method,
         INITCAP(TRIM(f.value:shipping_method::STRING)) AS shipping_method,
+
+        -- Financial Attributes
 
         COALESCE(
             f.value:discount_amount::NUMBER(18,6),
@@ -40,6 +48,8 @@ orders_flattened AS (
             0
         ) AS total_amount,
 
+        -- Date Attributes
+
         TO_TIMESTAMP_NTZ(f.value:created_at::STRING)
             AS created_at,
 
@@ -55,6 +65,8 @@ orders_flattened AS (
         TO_TIMESTAMP_NTZ(f.value:estimated_delivery_date::STRING)
             AS estimated_delivery_date,
 
+        -- Billing Address
+
         INITCAP(TRIM(f.value:billing_address:street::STRING))
             AS billing_street,
 
@@ -67,6 +79,8 @@ orders_flattened AS (
         TRIM(f.value:billing_address:zip_code::STRING)
             AS billing_zip_code,
 
+        -- Shipping Address
+
         INITCAP(TRIM(f.value:shipping_address:street::STRING))
             AS shipping_street,
 
@@ -78,6 +92,8 @@ orders_flattened AS (
 
         TRIM(f.value:shipping_address:zip_code::STRING)
             AS shipping_zip_code,
+
+        -- Order Item Details
 
         item.value:product_id::STRING AS product_id,
 
@@ -117,9 +133,7 @@ order_item_metrics AS (
 
         *,
 
-        ------------------------------------------------
-        -- Treat discounts as percentages
-        ------------------------------------------------
+        -- Revenue Metrics
 
         ROUND(
             quantity * unit_price * (1 - (item_discount / 100)),
@@ -139,9 +153,7 @@ aggregated_orders AS (
 
     SELECT
 
-        ------------------------------------------------
-        -- Keys
-        ------------------------------------------------
+        -- Business Keys
 
         order_id,
         product_id,
@@ -149,10 +161,8 @@ aggregated_orders AS (
         employee_id,
         campaign_id,
         store_id,
-        
-        ------------------------------------------------
+
         -- Order Attributes
-        ------------------------------------------------
 
         order_source,
         order_status,
@@ -171,9 +181,7 @@ aggregated_orders AS (
         delivery_date,
         estimated_delivery_date,
 
-        ------------------------------------------------
-        -- Addresses
-        ------------------------------------------------
+        -- Address Details
 
         CONCAT(
             billing_street,
@@ -195,9 +203,7 @@ aggregated_orders AS (
             shipping_zip_code
         ) AS shipping_address,
 
-        ------------------------------------------------
-        -- Aggregated Order Metrics
-        ------------------------------------------------
+        -- Order Metrics
 
         COUNT(product_id) AS total_items,
 
@@ -218,9 +224,7 @@ aggregated_orders AS (
             2
         ) AS total_discount,
 
-        ------------------------------------------------
-        -- Profitability Base Metrics
-        ------------------------------------------------
+        -- Profitability Metrics
 
         ROUND(
             SUM(line_revenue_amount),
@@ -278,9 +282,7 @@ final_transformed AS (
 
         *,
 
-        ------------------------------------------------
         -- Profitability Metrics
-        ------------------------------------------------
 
         ROUND(
             (
@@ -311,9 +313,7 @@ final_transformed AS (
             ELSE NULL
         END AS profit_margin_percentage,
 
-        ------------------------------------------------
-        -- Time Of Day
-        ------------------------------------------------
+        -- Time Classification
 
         CASE
 
@@ -333,9 +333,7 @@ final_transformed AS (
 
         END AS order_time_of_day,
 
-        ------------------------------------------------
-        -- Calendar Dimensions
-        ------------------------------------------------
+        -- Calendar Attributes
 
         YEAR(order_date) AS order_year,
 
@@ -345,9 +343,7 @@ final_transformed AS (
 
         WEEK(order_date) AS order_week,
 
-        ------------------------------------------------
-        -- Shipping Efficiency Metrics
-        ------------------------------------------------
+        -- Shipping Metrics
 
         DATEDIFF(
             DAY,
@@ -389,10 +385,12 @@ deduplicated AS (
 
     FROM final_transformed
 
-        QUALIFY ROW_NUMBER() OVER (
-            PARTITION BY order_id, product_id
-            ORDER BY created_at DESC
-        ) = 1
+    -- Latest Order Record
+
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY order_id, product_id
+        ORDER BY created_at DESC
+    ) = 1
 
 )
 

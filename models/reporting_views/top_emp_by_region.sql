@@ -1,7 +1,6 @@
 
 SELECT
 
-    ------------------------------------------------------------
     -- Region and Employee Attributes
 
     ds.region,
@@ -12,14 +11,12 @@ SELECT
 
     de.role,
 
-    ------------------------------------------------------------
     -- Performance Metrics
 
     COUNT(DISTINCT fs.order_id) AS total_orders,
 
     SUM(fs.quantity_sold) AS total_quantity_sold,
 
-    ------------------------------------------------------------
     -- Revenue Metrics
 
     ROUND(
@@ -37,7 +34,6 @@ SELECT
         2
     ) AS average_order_value,
 
-    ------------------------------------------------------------
     -- Regional Employee Ranking
 
     DENSE_RANK() OVER (
@@ -47,13 +43,11 @@ SELECT
 
 FROM {{ ref('fact_sales') }} fs
 
-    ------------------------------------------------------------
     -- Employee Dimension
 
     INNER JOIN {{ ref('dim_employee') }} de
         ON fs.employee_key = de.employee_key
 
-    ------------------------------------------------------------
     -- Store Dimension
 
     INNER JOIN {{ ref('dim_store') }} ds
@@ -66,10 +60,9 @@ GROUP BY
     de.full_name,
     de.role
 
-------------------------------------------------------------
 -- Best performers within each region
 
 ORDER BY
 
-    ds.region,
-    regional_rank
+    regional_rank,
+    ds.region

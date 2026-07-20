@@ -5,9 +5,9 @@
 
 SELECT
 
-    ------------------------------------------------------------------
+
     -- Surrogate Key
-    ------------------------------------------------------------------
+
     {{ dbt_utils.generate_surrogate_key([
         'customer_id',
         'dbt_valid_from'
@@ -15,14 +15,9 @@ SELECT
 
 
     customer_id,
-
-
     full_name,
-
     email_id AS email,
-
     phn_no AS phone,
-
 
     street,
     city,
@@ -30,20 +25,16 @@ SELECT
     zip_code,
     standardized_address,
 
-
     customer_age,
     income_bracket,
     occupation,
     loyalty_tier,
-
-
     customer_segment AS segment,
 
     registration_date,
 
-    ------------------------------------------------------------------
     -- Type 2 SCD Columns
-    ------------------------------------------------------------------
+
     dbt_valid_from AS valid_from,
 
     dbt_valid_to AS valid_to,

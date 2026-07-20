@@ -1,20 +1,15 @@
 SELECT
 
-    ------------------------------------------------------------
     -- Employee Attributes
 
     de.role,
 
-
-
-    ------------------------------------------------------------
     -- Employee Sales Metrics
 
     COUNT(DISTINCT fs.order_id) AS total_orders,
 
     SUM(fs.quantity_sold) AS total_quantity_sold,
 
-    ------------------------------------------------------------
     -- Revenue Metrics
 
     ROUND(
@@ -22,22 +17,12 @@ SELECT
         2
     ) AS total_sales_amount,
 
-    ROUND(
-        SUM(fs.cost_amount),
-        2
-    ) AS total_cost_amount,
 
     ROUND(
         SUM(fs.profit_amount),
         2
     ) AS total_profit_amount,
 
-    ROUND(
-        AVG(fs.total_sales_amount),
-        2
-    ) AS average_order_value,
-
-    ------------------------------------------------------------
     -- Contribution Metrics
 
     ROUND(
@@ -48,7 +33,6 @@ SELECT
 
 FROM {{ ref('fact_sales') }} fs
 
-    ------------------------------------------------------------
     -- Employee Dimension
 
     INNER JOIN {{ ref('dim_employee') }} de
@@ -58,8 +42,6 @@ GROUP BY
 
     de.role
 
-
-------------------------------------------------------------
 -- Highest contributing roles first
 
 ORDER BY

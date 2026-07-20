@@ -1,7 +1,6 @@
 
 SELECT
 
-    ------------------------------------------------------------
     -- Customer Information
 
     dc.customer_id,
@@ -12,7 +11,6 @@ SELECT
 
     dc.loyalty_tier,
 
-    ------------------------------------------------------------
     -- Purchase Metrics
 
     COUNT(DISTINCT fs.order_id) AS total_orders,
@@ -29,12 +27,6 @@ SELECT
         2
     ) AS lifetime_profit,
 
-    ROUND(
-        AVG(fs.total_sales_amount),
-        2
-    ) AS average_order_value,
-
-    ------------------------------------------------------------
     -- Customer Activity
 
     MIN(dd.full_date) AS first_purchase_date,
@@ -47,7 +39,6 @@ SELECT
         MAX(dd.full_date)
     ) AS customer_lifetime_days,
 
-    ------------------------------------------------------------
     -- Customer Lifetime Value
 
     ROUND(
@@ -57,13 +48,11 @@ SELECT
 
 FROM {{ ref('fact_sales') }} fs
 
-    ------------------------------------------------------------
     -- Customer Dimension
 
     INNER JOIN {{ ref('dim_customer') }} dc
         ON fs.customer_key = dc.customer_key
 
-    ------------------------------------------------------------
     -- Date Dimension
 
     INNER JOIN {{ ref('dim_date') }} dd
@@ -76,7 +65,6 @@ GROUP BY
     dc.segment,
     dc.loyalty_tier
 
-------------------------------------------------------------
 -- Highest CLV customers first
 
 ORDER BY

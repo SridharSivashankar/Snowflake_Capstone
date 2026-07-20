@@ -1,5 +1,7 @@
 WITH source AS (
 
+    -- Source Data
+
     SELECT *
     FROM {{ ref('bronze_product') }}
 
@@ -8,6 +10,8 @@ WITH source AS (
 flattened AS (
 
     SELECT
+
+        -- Product Details
 
         f.value:product_id::STRING            AS product_id,
         f.value:name::STRING                  AS product_name,
@@ -28,15 +32,23 @@ flattened AS (
 
         f.value:warranty_period::STRING       AS warranty_period,
 
+        -- Supplier Details
+
         f.value:supplier_id::STRING           AS supplier_id,
+
+        -- Pricing
 
         f.value:cost_price::NUMBER(18,2)      AS cost_price,
         f.value:unit_price::NUMBER(18,2)      AS unit_price,
+
+        -- Inventory
 
         f.value:stock_quantity::NUMBER        AS stock_quantity,
         f.value:reorder_level::NUMBER         AS reorder_level,
 
         f.value:is_featured::BOOLEAN          AS is_featured,
+
+        -- Dates
 
         f.value:launch_date::STRING           AS launch_date,
         f.value:last_modified_date::STRING    AS last_modified_date
@@ -52,10 +64,11 @@ cleaned AS (
 
     SELECT
 
-
+        -- Product Key
 
         TRIM(product_id) AS product_id,
 
+        -- Product Standardization
 
         INITCAP(TRIM(product_name))
             AS product_name,
@@ -86,7 +99,7 @@ cleaned AS (
 
         technical_specs,
 
-
+        -- Product Description
 
         CONCAT(
             INITCAP(TRIM(product_name)),
@@ -96,7 +109,7 @@ cleaned AS (
             TRIM(technical_specs)
         ) AS product_full_description,
 
-
+        -- Product Hierarchy
 
         CONCAT(
             INITCAP(TRIM(category)),
@@ -106,7 +119,7 @@ cleaned AS (
             INITCAP(TRIM(product_line))
         ) AS product_hierarchy,
 
-
+        -- Pricing Metrics
 
         COALESCE(cost_price,0)
             AS cost_price,
@@ -131,14 +144,14 @@ cleaned AS (
             ELSE NULL
         END AS profit_margin_percentage,
 
-
+        -- Inventory Metrics
 
         COALESCE(stock_quantity,0)
             AS stock_quantity,
 
         COALESCE(reorder_level,0)
             AS reorder_level,
-        
+
         CASE
             WHEN stock_quantity < reorder_level
             THEN TRUE
@@ -153,11 +166,12 @@ cleaned AS (
 
         is_featured,
 
+        -- Supplier Reference
 
         TRIM(supplier_id)
             AS supplier_id,
 
-
+        -- Physical Attributes
 
         TRIM(weight)
             AS weight,
@@ -165,7 +179,7 @@ cleaned AS (
         TRIM(dimensions)
             AS dimensions,
 
-
+        -- Date Standardization
 
         TO_DATE(launch_date)
             AS launch_date,
@@ -182,6 +196,8 @@ deduplicated AS (
     SELECT *
 
     FROM cleaned
+
+    -- Latest Product Record
 
     QUALIFY ROW_NUMBER() OVER (
         PARTITION BY product_id

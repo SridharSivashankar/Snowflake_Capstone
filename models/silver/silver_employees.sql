@@ -1,5 +1,7 @@
 WITH source AS (
 
+    -- Source Data
+
     SELECT *
     FROM {{ ref('bronze_employee') }}
 
@@ -8,6 +10,8 @@ WITH source AS (
 flattened AS (
 
     SELECT
+
+        -- Employee Details
 
         f.value:employee_id::STRING               AS employee_id,
 
@@ -21,6 +25,8 @@ flattened AS (
         f.value:hire_date::STRING                 AS hire_date,
         f.value:last_modified_date::STRING        AS last_modified_date,
 
+        -- Employment Details
+
         f.value:department::STRING                AS department,
         f.value:role::STRING                      AS role,
         f.value:education::STRING                 AS education,
@@ -29,12 +35,16 @@ flattened AS (
         f.value:manager_id::STRING                AS manager_id,
         f.value:work_location::STRING             AS work_location,
 
+        -- Performance Metrics
+
         f.value:salary::NUMBER(18,2)              AS salary,
         f.value:current_sales::NUMBER(18,2)       AS current_sales,
         f.value:sales_target::NUMBER(18,2)        AS sales_target,
         f.value:performance_rating::NUMBER(5,2)   AS performance_rating,
 
         f.value:certifications                    AS certifications,
+
+        -- Address Details
 
         f.value:address:street::STRING            AS street,
         f.value:address:city::STRING              AS city,
@@ -52,10 +62,11 @@ cleaned AS (
 
     SELECT
 
+        -- Employee Key
 
         TRIM(employee_id) AS employee_id,
 
-
+        -- Name Standardization
 
         INITCAP(TRIM(first_name)) AS first_name,
 
@@ -67,6 +78,7 @@ cleaned AS (
             INITCAP(TRIM(last_name))
         ) AS full_name,
 
+        -- Email Validation
 
         LOWER(TRIM(email)) AS email_id,
 
@@ -88,6 +100,7 @@ cleaned AS (
             ELSE 'INVALID'
         END AS email_status,
 
+        -- Phone Validation
 
         phone AS original_phone,
 
@@ -116,7 +129,7 @@ cleaned AS (
             ELSE 'INVALID'
         END AS phone_status,
 
-
+        -- Date Standardization
 
         TO_DATE(date_of_birth) AS date_of_birth,
 
@@ -124,7 +137,7 @@ cleaned AS (
 
         TO_DATE(last_modified_date) AS last_modified_date,
 
-
+        -- Tenure Calculation
 
         ROUND(
             DATEDIFF(
@@ -135,6 +148,7 @@ cleaned AS (
             2
         ) AS tenure_years,
 
+        -- Attribute Standardization
 
         INITCAP(TRIM(department))
             AS department,
@@ -151,6 +165,7 @@ cleaned AS (
         UPPER(TRIM(work_location))
             AS work_location,
 
+        -- Role Standardization
 
         CASE
 
@@ -170,7 +185,7 @@ cleaned AS (
 
         END AS standardized_role,
 
-
+        -- Performance Measures
 
         COALESCE(salary,0)
             AS salary,
@@ -184,8 +199,6 @@ cleaned AS (
         COALESCE(performance_rating,0)
             AS performance_rating,
 
-
-
         CASE
             WHEN sales_target > 0
             THEN ROUND(
@@ -195,11 +208,11 @@ cleaned AS (
             ELSE NULL
         END AS target_achievement_percentage,
 
-
+        -- Certifications
 
         certifications,
 
-
+        -- Address Standardization
 
         INITCAP(TRIM(street))
             AS street,
@@ -232,6 +245,8 @@ deduplicated AS (
     SELECT *
 
     FROM cleaned
+
+    -- Latest Employee Record
 
     QUALIFY ROW_NUMBER() OVER (
         PARTITION BY employee_id

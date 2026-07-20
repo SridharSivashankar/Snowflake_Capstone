@@ -1,17 +1,13 @@
 SELECT
 
-    ------------------------------------------------------------
     -- Customer Information
-    ------------------------------------------------------------
     dc.customer_id,
 
     dc.full_name,
 
     dc.segment AS customer_segment,
 
-    dc.loyalty_tier,
 
-    ------------------------------------------------------------
     -- Purchase Frequency Metrics
 
     COUNT(DISTINCT fs.order_id) AS total_orders,
@@ -22,7 +18,6 @@ SELECT
         ELSE 'One-Time Customer'
     END AS customer_type,
 
-    ------------------------------------------------------------
     -- Revenue Metrics
 
     ROUND(
@@ -35,7 +30,6 @@ SELECT
         2
     ) AS average_order_value,
 
-    ------------------------------------------------------------
     -- Repeat Purchase Indicator
 
     CASE
@@ -46,7 +40,6 @@ SELECT
 
 FROM {{ ref('fact_sales') }} fs
 
-    ------------------------------------------------------------
     -- Customer Dimension
 
     INNER JOIN {{ ref('dim_customer') }} dc
@@ -56,10 +49,8 @@ GROUP BY
 
     dc.customer_id,
     dc.full_name,
-    dc.segment,
-    dc.loyalty_tier
+    dc.segment
 
-------------------------------------------------------------
 -- Customers with highest purchase frequency first
 
 ORDER BY

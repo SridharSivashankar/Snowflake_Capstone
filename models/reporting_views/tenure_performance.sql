@@ -1,5 +1,4 @@
 SELECT
-    ------------------------------------------------------------
     -- Employee Attributes
 
     de.employee_id,
@@ -14,7 +13,6 @@ SELECT
 
     de.performance_rating,
 
-    ------------------------------------------------------------
     -- Sales Performance Metrics
 
     COUNT(DISTINCT fs.order_id) AS total_orders,
@@ -36,7 +34,6 @@ SELECT
         2
     ) AS average_order_value,
 
-    ------------------------------------------------------------
     -- Productivity Metrics
 
     ROUND(
@@ -53,7 +50,6 @@ SELECT
 
 FROM {{ ref('fact_sales') }} fs
 
-    ------------------------------------------------------------
     -- Employee Dimension
 
     INNER JOIN {{ ref('dim_employee') }} de
@@ -68,7 +64,6 @@ GROUP BY
     de.tenure,
     de.performance_rating
 
-------------------------------------------------------------
 -- Highest sales employees first
 
 ORDER BY

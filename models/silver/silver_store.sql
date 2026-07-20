@@ -1,5 +1,7 @@
 WITH source AS (
 
+    -- Source Data
+
     SELECT *
     FROM {{ ref('bronze_store') }}
 
@@ -8,6 +10,8 @@ WITH source AS (
 flattened AS (
 
     SELECT
+
+        -- Store Details
 
         f.value:store_id::STRING                 AS store_id,
         f.value:store_name::STRING               AS store_name,
@@ -24,20 +28,30 @@ flattened AS (
 
         f.value:employee_count::NUMBER           AS employee_count,
 
+        -- Performance Metrics
+
         f.value:current_sales::NUMBER(18,2)      AS current_sales,
         f.value:sales_target::NUMBER(18,2)       AS sales_target,
         f.value:monthly_rent::NUMBER(18,2)       AS monthly_rent,
 
         f.value:is_active::BOOLEAN               AS is_active,
 
+        -- Dates
+
         f.value:opening_date::STRING             AS opening_date,
         f.value:last_modified_date::STRING       AS last_modified_date,
 
+        -- Store Services
+
         f.value:services                         AS services,
+
+        -- Operating Hours
 
         f.value:operating_hours:weekdays::STRING AS weekday_hours,
         f.value:operating_hours:weekends::STRING AS weekend_hours,
         f.value:operating_hours:holidays::STRING AS holiday_hours,
+
+        -- Address Details
 
         f.value:address:street::STRING           AS street,
         f.value:address:city::STRING             AS city,
@@ -56,10 +70,11 @@ cleaned AS (
 
     SELECT
 
+        -- Store Key
 
         TRIM(store_id) AS store_id,
 
-
+        -- Store Standardization
 
         INITCAP(TRIM(store_name))
             AS store_name,
@@ -73,6 +88,7 @@ cleaned AS (
         TRIM(manager_id)
             AS manager_id,
 
+        -- Email Validation
 
         LOWER(TRIM(email))
             AS email_id,
@@ -95,7 +111,7 @@ cleaned AS (
             ELSE 'INVALID'
         END AS email_status,
 
-
+        -- Phone Validation
 
         phone_number AS original_phone,
 
@@ -124,7 +140,7 @@ cleaned AS (
             ELSE 'INVALID'
         END AS phone_status,
 
-
+        -- Address Standardization
 
         INITCAP(TRIM(street))
             AS street,
@@ -162,6 +178,7 @@ cleaned AS (
             UPPER(TRIM(country))
         ) AS standardized_address,
 
+        -- Date Standardization
 
         TO_DATE(opening_date)
             AS opening_date,
@@ -169,6 +186,7 @@ cleaned AS (
         TO_DATE(last_modified_date)
             AS last_modified_date,
 
+        -- Store Age
 
         ROUND(
             DATEDIFF(
@@ -179,6 +197,7 @@ cleaned AS (
             2
         ) AS store_age_years,
 
+        -- Store Attributes
 
         COALESCE(size_sq_ft,0)
             AS size_sq_ft,
@@ -198,6 +217,7 @@ cleaned AS (
 
         END AS store_size_category,
 
+        -- Store Metrics
 
         COALESCE(employee_count,0)
             AS employee_count,
@@ -212,8 +232,6 @@ cleaned AS (
             AS monthly_rent,
 
         is_active,
-
-
 
         CASE
             WHEN sales_target > 0
@@ -249,10 +267,13 @@ cleaned AS (
             ELSE 'HEALTHY'
         END AS performance_flag,
 
+        -- Operating Hours
 
         weekday_hours,
         weekend_hours,
         holiday_hours,
+
+        -- Services
 
         services
 
@@ -265,6 +286,8 @@ deduplicated AS (
     SELECT *
 
     FROM cleaned
+
+    -- Latest Store Record
 
     QUALIFY ROW_NUMBER() OVER (
         PARTITION BY store_id

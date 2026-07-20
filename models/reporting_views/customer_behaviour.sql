@@ -1,10 +1,7 @@
-{{ config(
-    materialized = 'view'
-) }}
 
 SELECT
 
-    ------------------------------------------------------------
+
     -- Customer Information
 
     dc.customer_id,
@@ -15,7 +12,6 @@ SELECT
 
     dc.loyalty_tier,
 
-    ------------------------------------------------------------
     -- Purchasing Metrics
 
     COUNT(DISTINCT fs.order_id) AS total_orders,
@@ -37,7 +33,6 @@ SELECT
         2
     ) AS total_profit_generated,
 
-    ------------------------------------------------------------
     -- Customer Activity
 
     MIN(dd.full_date) AS first_purchase_date,
@@ -52,13 +47,11 @@ SELECT
 
 FROM {{ ref('fact_sales') }} fs
 
-    ------------------------------------------------------------
     -- Customer Dimension
 
     INNER JOIN {{ ref('dim_customer') }} dc
         ON fs.customer_key = dc.customer_key
 
-    ------------------------------------------------------------
     -- Date Dimension
 
     INNER JOIN {{ ref('dim_date') }} dd
@@ -71,7 +64,6 @@ GROUP BY
     dc.segment,
     dc.loyalty_tier
 
-------------------------------------------------------------
 -- Highest spending customers first
 
 ORDER BY

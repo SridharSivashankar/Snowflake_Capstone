@@ -1,5 +1,7 @@
 WITH source AS (
 
+    -- Source Data
+
     SELECT *
     FROM {{ ref('bronze_customer') }}
 
@@ -8,6 +10,8 @@ WITH source AS (
 flattened AS (
 
     SELECT
+
+        -- Customer Details
 
         f.value:customer_id::STRING              AS customer_id,
         f.value:first_name::STRING               AS first_name,
@@ -45,20 +49,15 @@ flattened AS (
 
 ),
 
-
 cleaned AS (
 
     SELECT
 
-        ----------------------------------------------------
         -- Customer Key
-        ----------------------------------------------------
 
         TRIM(customer_id) AS customer_id,
 
-        ----------------------------------------------------
         -- Name Standardization
-        ----------------------------------------------------
 
         INITCAP(TRIM(first_name)) AS first_name,
 
@@ -70,9 +69,7 @@ cleaned AS (
             INITCAP(TRIM(last_name))
         ) AS full_name,
 
-        ----------------------------------------------------
         -- Email Validation
-        ----------------------------------------------------
 
         LOWER(TRIM(email)) AS email_id,
 
@@ -94,142 +91,118 @@ cleaned AS (
             ELSE 'INVALID'
         END AS email_status,
 
-      ----------------------------------------------------
         -- Phone Validation
-        ----------------------------------------------------
 
-            phone AS original_phone,
+        phone AS original_phone,
 
-            UPPER(
-                REGEXP_REPLACE(
-                    TRIM(phone),
-                    '[^0-9X]',
-                    ''
-                )
-            ) AS cleaned_phone,
+        UPPER(
+            REGEXP_REPLACE(
+                TRIM(phone),
+                '[^0-9X]',
+                ''
+            )
+        ) AS cleaned_phone,
 
-            CASE
+        CASE
 
-                ------------------------------------------------
-                -- Formats ending with X
-                -- Examples:
-                -- 555.857.336X
-                -- 555-857-336X
-                -- 555 857 336X
-                -- (555) 857-336X
-                -- 555857336X
-                ------------------------------------------------
-                WHEN REGEXP_LIKE(
-                    UPPER(
-                        REGEXP_REPLACE(
-                            TRIM(phone),
-                            '[^0-9X]',
-                            ''
-                        )
-                    ),
-                    '^555[0-9]{6}X$'
-                )
-                THEN UPPER(
+            WHEN REGEXP_LIKE(
+                UPPER(
                     REGEXP_REPLACE(
                         TRIM(phone),
                         '[^0-9X]',
                         ''
                     )
+                ),
+                '^555[0-9]{6}X$'
+            )
+            THEN UPPER(
+                REGEXP_REPLACE(
+                    TRIM(phone),
+                    '[^0-9X]',
+                    ''
                 )
+            )
 
-                ------------------------------------------------
-                -- +1 prefixed formats ending with X
-                -- Examples:
-                -- +1 555 857 336X
-                -- +1-555-857-336X
-                -- +1555857336X
-                ------------------------------------------------
-                WHEN REGEXP_LIKE(
-                    UPPER(
-                        REGEXP_REPLACE(
-                            TRIM(phone),
-                            '[^0-9X]',
-                            ''
-                        )
-                    ),
-                    '^1555[0-9]{6}X$'
-                )
-                THEN RIGHT(
-                    UPPER(
-                        REGEXP_REPLACE(
-                            TRIM(phone),
-                            '[^0-9X]',
-                            ''
-                        )
-                    ),
-                    10
-                )
-
-                ------------------------------------------------
-                -- Fully numeric format
-                -- Example:
-                -- 5551234567
-                ------------------------------------------------
-                WHEN REGEXP_LIKE(
+            WHEN REGEXP_LIKE(
+                UPPER(
                     REGEXP_REPLACE(
                         TRIM(phone),
-                        '[^0-9]',
+                        '[^0-9X]',
                         ''
-                    ),
-                    '^555[0-9]{7}$'
-                )
-                THEN REGEXP_REPLACE(
+                    )
+                ),
+                '^1555[0-9]{6}X$'
+            )
+            THEN RIGHT(
+                UPPER(
+                    REGEXP_REPLACE(
+                        TRIM(phone),
+                        '[^0-9X]',
+                        ''
+                    )
+                ),
+                10
+            )
+
+            WHEN REGEXP_LIKE(
+                REGEXP_REPLACE(
                     TRIM(phone),
                     '[^0-9]',
                     ''
-                )
+                ),
+                '^555[0-9]{7}$'
+            )
+            THEN REGEXP_REPLACE(
+                TRIM(phone),
+                '[^0-9]',
+                ''
+            )
 
-                ELSE NULL
+            ELSE NULL
 
-            END AS phn_no,
+        END AS phn_no,
 
-            CASE
+        CASE
 
-                WHEN REGEXP_LIKE(
-                    UPPER(
-                        REGEXP_REPLACE(
-                            TRIM(phone),
-                            '[^0-9X]',
-                            ''
-                        )
-                    ),
-                    '^555[0-9]{6}X$'
-                )
-                THEN 'VALID'
-
-                WHEN REGEXP_LIKE(
-                    UPPER(
-                        REGEXP_REPLACE(
-                            TRIM(phone),
-                            '[^0-9X]',
-                            ''
-                        )
-                    ),
-                    '^1555[0-9]{6}X$'
-                )
-                THEN 'VALID'
-
-                WHEN REGEXP_LIKE(
+            WHEN REGEXP_LIKE(
+                UPPER(
                     REGEXP_REPLACE(
                         TRIM(phone),
-                        '[^0-9]',
+                        '[^0-9X]',
                         ''
-                    ),
-                    '^555[0-9]{7}$'
-                )
-                THEN 'VALID'
+                    )
+                ),
+                '^555[0-9]{6}X$'
+            )
+            THEN 'VALID'
 
-                ELSE 'INVALID'
+            WHEN REGEXP_LIKE(
+                UPPER(
+                    REGEXP_REPLACE(
+                        TRIM(phone),
+                        '[^0-9X]',
+                        ''
+                    )
+                ),
+                '^1555[0-9]{6}X$'
+            )
+            THEN 'VALID'
 
-            END AS phone_status,
-        ----------------------------------------------------
+            WHEN REGEXP_LIKE(
+                REGEXP_REPLACE(
+                    TRIM(phone),
+                    '[^0-9]',
+                    ''
+                ),
+                '^555[0-9]{7}$'
+            )
+            THEN 'VALID'
+
+            ELSE 'INVALID'
+
+        END AS phone_status,
+
         -- Date Standardization
-        ----------------------------------------------------
 
         COALESCE(
             TRY_TO_DATE(birth_date,'YYYY-MM-DD'),
@@ -242,9 +215,7 @@ cleaned AS (
 
         TO_DATE(last_modified_date) AS last_modified_date,
 
-        ----------------------------------------------------
         -- Age Calculation
-        ----------------------------------------------------
 
         FLOOR(
             DATEDIFF(
@@ -257,9 +228,7 @@ cleaned AS (
             ) / 365.25
         ) AS customer_age,
 
-        ----------------------------------------------------
-        -- Customer Segment
-        ----------------------------------------------------
+        -- Customer Segmentation
 
         CASE
 
@@ -315,9 +284,7 @@ cleaned AS (
 
         END AS customer_segment,
 
-        ----------------------------------------------------
-        -- Standardization
-        ----------------------------------------------------
+        -- Attribute Standardization
 
         UPPER(TRIM(income_bracket))
             AS income_bracket,
@@ -336,9 +303,7 @@ cleaned AS (
 
         marketing_opt_in,
 
-        ----------------------------------------------------
-        -- Metrics
-        ----------------------------------------------------
+        -- Customer Metrics
 
         COALESCE(total_purchases,0)
             AS total_purchases,
@@ -346,9 +311,7 @@ cleaned AS (
         COALESCE(total_spend,0)
             AS total_spend,
 
-        ----------------------------------------------------
         -- Address Standardization
-        ----------------------------------------------------
 
         INITCAP(TRIM(street))
             AS street,
@@ -386,6 +349,8 @@ deduplicated AS (
     SELECT *
 
     FROM cleaned
+
+    -- Latest Customer Record
 
     QUALIFY ROW_NUMBER() OVER (
         PARTITION BY customer_id
