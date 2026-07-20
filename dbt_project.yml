@@ -44,12 +44,12 @@ models:
           +incremental_strategy: merge
           +unique_key: _source_file
     silver:
-      +schema: "{{ env_var('dbt_silver_schema') }}"
+      +schema: "{{ 'SILVER_PROD_23613' if target.name == 'Production' else 'SILVER_23613' }}"
       +materialized: table
     gold:
-      +schema: "{{ env_var('dbt_gold_schema') }}"
+      +schema: "{{ 'GOLD_PROD_23613' if target.name == 'Production' else 'GOLD_23613' }}"
       +materialized: table
     reporting_views:
       +materialized: view
-      +schema: "{{ env_var('dbt_reporting_views') }}"
+      +schema: "{{ 'REPORTING_VIEWS_PROD_23613' if target.name == 'Production' else 'Reporting_views_23613' }}"
 
