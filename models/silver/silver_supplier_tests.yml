@@ -1,0 +1,187 @@
+version: 2
+
+models:
+  - name: silver_supplier
+
+    columns:
+
+      - name: supplier_id
+        tests:
+          - unique
+          - not_null
+
+      - name: supplier_name
+        tests:
+          - not_null
+
+      - name: supplier_type
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Electronics Manufacturer
+                - Automotive Parts Supplier
+                - Food Distributor
+                - Industrial Supplier
+                - Textile Supplier
+
+      - name: tax_id
+        tests:
+          - not_null
+
+      - name: website
+        tests:
+          - not_null
+
+      - name: credit_rating
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - A
+                - B
+                - C
+                - D
+                - E
+
+      - name: contact_person
+        tests:
+          - not_null
+
+      - name: email_id
+        tests:
+          - not_null
+
+      - name: email_status
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - VALID
+                - INVALID
+
+      - name: original_phone
+        tests:
+          - not_null
+
+      - name: phn_no
+        tests:
+          - not_null
+
+      - name: phone_status
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - VALID
+                - INVALID
+
+      - name: address
+        tests:
+          - not_null
+
+      - name: last_order_date
+        tests:
+          - not_null
+
+      - name: last_modified_date
+        tests:
+          - not_null
+
+      - name: contract_start_date
+        tests:
+          - not_null
+
+      - name: contract_end_date
+        tests:
+          - not_null
+
+      - name: contract_duration_days
+        tests:
+          - not_null
+
+      - name: contract_status
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - ACTIVE
+                - EXPIRED
+
+      - name: supplier_age_years
+        tests:
+          - not_null
+
+      - name: lead_time_days
+        tests:
+          - not_null
+
+      - name: minimum_order_quantity
+        tests:
+          - not_null
+
+      - name: payment_terms
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Net 30
+                - Net 45
+                - Net 60
+                - Net 90
+
+      - name: preferred_carrier
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - FedEx
+                - UPS
+                - DHL
+                - USPS
+
+      - name: is_active
+        tests:
+          - not_null
+
+      - name: renewal_option
+        tests:
+          - not_null
+
+      - name: exclusivity
+        tests:
+          - not_null
+
+      - name: average_delay_days
+        tests:
+          - not_null
+
+      - name: defect_rate
+        tests:
+          - not_null
+
+      - name: on_time_delivery_rate
+        tests:
+          - not_null
+
+      - name: quality_rating
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - Excellent
+                - Good
+                - Average
+                - Poor
+
+      - name: response_time_hours
+        tests:
+          - not_null
+
+      - name: returns_percentage
+        tests:
+          - not_null
+
+      - name: categories_supplied
+        tests:
+          - not_null

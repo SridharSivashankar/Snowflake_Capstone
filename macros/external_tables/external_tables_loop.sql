@@ -13,7 +13,7 @@
     {% set sql %}
     CREATE OR REPLACE EXTERNAL TABLE
     {{ target.database}}.{{target.schema}}.{{table_name}}
-    (Col1 VARIANT as(VALUE))
+    (COL1 VARIANT as(VALUE))
     LOCATION = @CT_SRIDHAR_SIVASHANKAR_DB.CAPSTONEPROJECT_23613.Azure_stage/Capstone_Project_Data/{{folder}}
     FILE_FORMAT = (TYPE = JSON
                     STRIP_OUTER_ARRAY = TRUE)

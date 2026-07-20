@@ -1,41 +1,35 @@
 version: 2
 
 sources:
-  - name: rawdata_source              
+  - name: rawdata_bronze            
     description: "Raw data from azure"
     database: CT_SRIDHAR_SIVASHANKAR_DB              
     schema: CAPSTONEPROJECT_23613       
 
     config:
       freshness:
-        warn_after: {count: 12, period: hour}
-        error_after: {count: 24, period: hour}
+        warn_after: {count: 1, period: day}
+
 
     tables:
       - name: EXT_CAMPAIGN         
         description: "The campaign details are stored here"
+
+
+      - name: EXT_CUSTOMER     
+        description: "The customer details are stored here"
+          
+      - name: EXT_EMPLOYEE
+        description: "The employee details are stored here"
+
+      - name: EXT_ORDERS
+        description: "The order details are stored here"
       
-        columns:
-          - name: id
-            description: "Primary key of the charge"
-            data_tests:           # Note: Called 'tests:' in dbt versions prior to v1.8
-              - unique
-              - not_null
+      - name: EXT_PRODUCT
+        description: "The product details are stored here"
+      
+      - name: EXT_STORE
+        description: "The store details are stored here"
 
-          - name: EXT_CUSTOMER     
-            description: "The customer details are stored here"
-          
-          - name: EXT_EMPLOYEE
-            description: "The employee details are stored here"
-
-          - name: EXT_ORDERS
-            description: "The order details are stored here"
-          
-          - name: EXT_PRODUCT
-            description: "The product details are stored here"
-          
-          - name: EXT_STORE
-            description: "The store details are stored here"
-
-          - name: EXT_SUPPLIER
-            description: "The supplier details are stored here"
+      - name: EXT_SUPPLIER
+        description: "The supplier details are stored here"
