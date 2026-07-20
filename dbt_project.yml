@@ -44,11 +44,11 @@ models:
       +incremental_strategy: merge
       +unique_key: _source_file
     silver:
+      +schema: "{{ 'SILVER_PROD_23613' if target.name == 'prod' else 'SILVER_23613' }}"
       +materialized: table
-      +schema: Silver_23613
     gold:
+      +schema: "{{ 'GOLD_PROD_23613' if target.name == 'prod' else 'GOLD_23613' }}"
       +materialized: table
-      +schema: Gold_23613
     reporting_views:
       +materialized: view
       +schema: Reporting_views_23613
