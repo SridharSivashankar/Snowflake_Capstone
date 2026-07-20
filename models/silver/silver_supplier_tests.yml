@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: silver_suppliers
+  - name: silver_supplier
 
     columns:
 

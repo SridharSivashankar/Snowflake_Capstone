@@ -8,7 +8,7 @@
 WITH sales AS (
 
     SELECT *
-    FROM {{ ref('silver_orders') }}
+    FROM {{ ref('silver_order') }}
 
 ),
 

@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: silver_orders
+  - name: silver_order
 
     columns:
 

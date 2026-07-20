@@ -30,4 +30,4 @@ SELECT
 
     sales_target
 
-FROM {{ ref('silver_employees') }}
+FROM {{ ref('silver_employee') }}

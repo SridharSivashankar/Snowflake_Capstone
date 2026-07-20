@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: silver_products
+  - name: silver_product
     description: Cleaned and standardized product master data
 
     columns:

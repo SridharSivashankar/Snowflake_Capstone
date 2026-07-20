@@ -20,7 +20,7 @@ SELECT
     s.supplier_name,
     s.supplier_type
 
-FROM {{ ref('silver_products') }} p
+FROM {{ ref('silver_product') }} p
 
-LEFT JOIN {{ ref('silver_suppliers') }} s
+LEFT JOIN {{ ref('silver_supplier') }} s
     ON p.supplier_id = s.supplier_id

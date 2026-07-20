@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: silver_customers
+  - name: silver_customer
     description: Cleaned and standardized customer data
 
     columns:

@@ -10,6 +10,6 @@
 }}
 
 select *
-from {{ ref('silver_customers') }}
+from {{ ref('silver_customer') }}
 
 {% endsnapshot %}

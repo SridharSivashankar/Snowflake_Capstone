@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: silver_employees
+  - name: silver_employee
     description: Cleaned and standardized employee data
 
     columns:
